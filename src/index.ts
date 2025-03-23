@@ -32,7 +32,7 @@ mongoose.connect(MONGODB_URI)
           .catch((err) => console.error('Failed to connect to MongoDB', err));
 
 // Routes
-app.use('/api/notes', noteRoutes);
+app.use(noteRoutes);
 
 // Root endpoint
 app.use('/', (req, res) => {
