@@ -8,7 +8,7 @@ export class AuthService implements IAuth {
                               // Check if the email is already in use
                               const existingUser = await User.findOne({ email });
                               if (existingUser) {
-                                        return { success: false, message: 'Email already in use. Please use a different email.' };
+                                        return { success: false, message: 'Email already exists' };
                               }
 
                               // Hash the password
