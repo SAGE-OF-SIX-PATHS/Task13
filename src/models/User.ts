@@ -1,20 +1,33 @@
-// src/models/User.ts
 import mongoose, { Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 
+// Define the IUser interface
 export interface IUser extends Document {
           _id: string; // Explicitly define _id as a string
           username: string;
           email: string;
           password: string;
           comparePassword(candidatePassword: string): Promise<boolean>;
+          createdAt: Date;
+          updatedAt: Date;
 }
 
-const UserSchema = new mongoose.Schema<IUser>({
-          username: { type: String, required: true, unique: true },
-          email: { type: String, required: true, unique: true },
-          password: { type: String, required: true },
-});
+// Define the IAuth interface
+export interface IAuth {
+          login(email: string, password: string): Promise<string>; // Returns a JWT token
+          logout(token: string): Promise<void>;
+          validateToken(token: string): Promise<boolean>;
+}
+
+// Define the User schema
+const UserSchema = new mongoose.Schema<IUser>(
+          {
+                    username: { type: String, required: true, unique: true },
+                    email: { type: String, required: true, unique: true },
+                    password: { type: String, required: true },
+          },
+          { timestamps: true } // Automatically add createdAt and updatedAt fields
+);
 
 // Hash password before saving
 UserSchema.pre<IUser>('save', async function (next) {
@@ -28,4 +41,5 @@ UserSchema.methods.comparePassword = async function (candidatePassword: string):
           return bcrypt.compare(candidatePassword, this.password);
 };
 
+// Create and export the User model
 export const User = mongoose.model<IUser>('User', UserSchema);
