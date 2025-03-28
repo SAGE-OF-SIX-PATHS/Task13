@@ -7,36 +7,31 @@ import {
           removeNote,
           listNotesByCategory,
 } from '../controllers/noteControllers';
-import { validateNote } from '../middlewares/validateNote';
+import { validateCreateNote, validateUpdateNote } from '../middlewares/validateNote';
 import { logger } from '../middlewares/logger';
+import Note from '../models/Note';
+
 
 const router = express.Router();
 
 router.use(logger);
 
-// GET /api/notes - List all notes
-router.get('/', (req, res) => {
-          res.send("Note working ");
-});
-router.get('/api/notes', (req, res) => {
-          listNotes(req, res);
-});
-router.get('/api/notes/:id', (req, res) => {
-          getNote(req, res);
-});
-router.post('/api/notes', (req, res) => {
-          addNote(req, res)
-});
-router.put('/api/notes/:id', (req, res) => {
-          modifyNote(req, res)
-});
-router.delete('/api/notes/:id', (req, res) => {
-          removeNote(req, res)
-});
+// GET / - List all notes
+router.get('/', listNotes);
 
-// GET /api/notes/categories/:categoryId - Get notes by category ID
-router.get('/categories/:categoryId', (req, res) => {
-          listNotesByCategory(req, res)
-});
+// GET /:id - Get a specific note
+router.get('/:id', getNote);
+
+// POST / - Create a new note
+router.post('/', validateCreateNote, addNote);
+
+// PUT /:id - Update a note
+router.put('/:id', validateUpdateNote, modifyNote);
+
+// DELETE /:id - Delete a note
+router.delete('/:id', removeNote);
+
+// GET /categories/:categoryId - Get notes by category
+router.get('/categories/:categoryId', listNotesByCategory);
 
 export default router;
